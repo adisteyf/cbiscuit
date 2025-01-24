@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")
 
 # src
 file(GLOB_RECURSE SRCS src/*.cpp src/*.c)
-file(GLOB_RECURSE HEADERS fe-headers/* include/*)
+file(GLOB_RECURSE HEADERS include/*)
 
 add_executable(main ${SRCS})
 
