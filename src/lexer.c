@@ -7,7 +7,7 @@ const size_t bsqt_tokenptr_sizeof = sizeof(BSQTToken *);
 
 void addToken(BSQTTokenArr *token_arr, BSQTToken *token) {
     token_arr->arr = realloc(token_arr->arr, (token_arr->len+1) * bsqt_tokenptr_sizeof);
-    
+
     token_arr->arr[token_arr->len] = token;
     token_arr->len++;
 }
@@ -31,10 +31,11 @@ int tokenize(char * str)
 
         token.type = __BSQT_KEYWORD_TYPE;
         token.key  = "unknown";
-        token.val  = (void *)0;
+        token.val  = (void *)1;
 
+        token_arr.arr = malloc((token_arr.len+1) * bsqt_tokenptr_sizeof);
         addToken(&token_arr, &token);
     }
 
-    printf("key of 1st token is: %s\n", token_arr.arr[0]);
+    printf("key of 1st token is: %s\n", token_arr.arr[0]->key);
 }
