@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include <stdint.h>
 #define __BSQT_SET_STR  "set"
 #define __BSQT_SET_LEN  3
 #define __BSQT_SET      10
@@ -14,6 +16,11 @@
 
 #define __BSQT_KEYLEN_BYDEF    15 /* bytes to allocate variable's name */
 #define __BSQT_KEYLEN_NEWBYTES 3
+
+#define __BSQT_VALLEN_BYDEF    15 /* bytes to allocate variable's value */
+#define __BSQT_VALLEN_NEWBYTES 3
+
+
 
 
 
@@ -29,8 +36,8 @@ typedef struct {
 
 
 void   addToken  (BSQTTokenArr *token_arr, BSQTToken *token);
-int    checkWord (char * str, int word_len, char * word);
-int    tokenize  (char * str);
+int    checkWord (const char * str, int word_len, char * word);
+int    tokenize  (const char * str);
 
 
 
