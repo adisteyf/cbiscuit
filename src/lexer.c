@@ -26,6 +26,8 @@ int checkWord(char * str, int word_len, char * word)
 int tokenize(char * str)
 {
     BSQTTokenArr token_arr;
+    token_arr.len = 0;
+
     if (checkWord(str, __BSQT_SET_LEN, __BSQT_SET_STR " ")) { /* space coz we need to check the syntax */
         BSQTToken token;
         token.type    = __BSQT_KEYWORD_TYPE;
@@ -34,7 +36,8 @@ int tokenize(char * str)
         token_arr.arr = malloc((token_arr.len+1) * bsqt_tokenptr_sizeof);
         addToken(&token_arr, &token);
 
-        token.type    = __BSQT_ID_TYPE;
+        BSQTToken id;
+        id.type       = __BSQT_ID_TYPE;
 
         size_t i = __BSQT_SET_LEN+1;
         char * var_key = malloc(__BSQT_KEYLEN_BYDEF);
@@ -44,9 +47,9 @@ int tokenize(char * str)
             var_key[j]=str[i+j];
         }
 
-        token.val = strdup(var_key);
+        id.val = strdup(var_key);
         free(var_key);
-        addToken(&token_arr, &token);
+        addToken(&token_arr, &id);
     }
 
     printf("key of 1st token is: %s\n", token_arr.arr[0]->val);
