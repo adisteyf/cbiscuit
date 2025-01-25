@@ -34,6 +34,17 @@ typedef struct {
     size_t       len;
 } BSQTTokenArr;
 
+typedef struct {
+    char * id;
+    void * val;
+    int    type;
+} BSQTVar;
+
+typedef struct {
+    BSQTVar ** arr;
+    size_t     len;
+} BSQTVarArr;
+
 
 void   addToken  (BSQTTokenArr *token_arr, BSQTToken *token);
 int    checkWord (const char * str, int word_len, char * word);

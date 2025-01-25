@@ -12,6 +12,14 @@ void addToken(BSQTTokenArr *token_arr, BSQTToken *token) {
     token_arr->len++;
 }
 
+void addVariable(BSQTVarArr *var_arr, BSQTVar *variable) {
+    var_arr->arr = realloc(var_arr->variable, (var_arr->len+1) * bsqt_tokenptr_sizeof);
+
+    var_arr->arr[var_arr->len] = variable;
+    var_arr->len++;
+}
+
+
 int checkWord(const char * str, int word_len, char * word)
 {
     for (unsigned int i=0; i<word_len; ++i) {
@@ -46,7 +54,57 @@ int isInteger(const char * str)
     return 1;
 }
 
-int tokenize(const char * str)
+int token_parse(BSQTTokenArr *tokarr) {
+    BSQTVarArr vararr;
+    BSQTTokenArr token_buff;
+
+    for (size_t i=0; i<tokarr->len; ++i) {
+        addToken(&token_buff, tokarr->arr[i]);
+
+        switch (tokarr->arr[i]->type) {
+            case __BSQT_KEYWORD_TYPE:
+                if (token_buff.len != 1) {
+                    puts("BSQT: keyword token isn't in the 1st place.");
+                    return 1;
+                }
+
+                if (strcmp(tokarr->arr[i]->type, __BSQT_SET_STR)==0) {
+                    BSQTVar var;
+                    addVariable(&vararr, &var);
+                }
+
+                break;
+            case __BSQT_ID_TYPE:
+                if (token_buff.len != 2 || token_buff.arr[0]->type != __BSQT_KEYWORD_TYPE
+                        || strcmp(token_buff.arr[0]->val, __BSQT_SET_STR)==0) { /* check if 1st token isn't "set" */
+
+                    puts("BSQT: syntax error.");
+                    return 1;
+                }
+
+                /* name of last variable (after set) equals value of current token */
+
+                /********************************************************
+                 * [                                                    *
+                 *      { token: __BSQT_ID_TYPE, value: "name_of_var" } *
+                 * ]                                                    *
+                 ********************************************************/
+
+                vararr.arr[vararr.len-1]->id = (char *)token_buff.arr[token_buff.len-1]->val;
+                break;
+            case __BSQT_INT_TYPE:
+                // TODO: add a check
+                // TODO: fix all bugs
+
+                vararr.arr[vararr.len-1]->val = token_buff.arr[token_buff.len-1]->val;
+                break;
+        }
+    }
+
+    return 0;
+}
+
+int tokenize(const char * str) // TODO: add a cycle for tokenize more than 1 string
 {
     BSQTTokenArr token_arr;
     token_arr.len = 0;
