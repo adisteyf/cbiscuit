@@ -26,16 +26,29 @@ int checkWord(char * str, int word_len, char * word)
 int tokenize(char * str)
 {
     BSQTTokenArr token_arr;
-    if (checkWord(str, __BSQT_SET_LEN, __BSQT_SET_STR)) {
+    if (checkWord(str, __BSQT_SET_LEN, __BSQT_SET_STR " ")) { /* space coz we need to check the syntax */
         BSQTToken token;
-
-        token.type = __BSQT_KEYWORD_TYPE;
-        token.key  = "unknown";
-        token.val  = (void *)1;
+        token.type    = __BSQT_KEYWORD_TYPE;
+        token.val     = __BSQT_SET_STR;
 
         token_arr.arr = malloc((token_arr.len+1) * bsqt_tokenptr_sizeof);
         addToken(&token_arr, &token);
+
+        token.type    = __BSQT_ID_TYPE;
+
+        size_t i = __BSQT_SET_LEN+1;
+        char * var_key = malloc(__BSQT_KEYLEN_BYDEF);
+        
+        for (size_t j=0; str[i+j]!=0 && str[i+j]!='\n' && str[i+j]!=' '; ++j) {
+            printf("%d\n", j);
+            var_key[j]=str[i+j];
+        }
+
+        token.val = strdup(var_key);
+        free(var_key);
+        addToken(&token_arr, &token);
     }
 
-    printf("key of 1st token is: %s\n", token_arr.arr[0]->key);
+    printf("key of 1st token is: %s\n", token_arr.arr[0]->val);
+    printf("key of 2nd token is: %s\n", token_arr.arr[1]->val);
 }
