@@ -23,6 +23,17 @@ int checkWord(char * str, int word_len, char * word)
     }
 }
 
+void free_token(BSQTToken *token) {
+    free(token->val);
+}
+
+void free_tokenArr(BSQTTokenArr *tokarr) {
+    for (size_t i=0; i<tokarr->len; ++i) {
+        free_token(tokarr->arr[i]);
+        puts("Freed token");
+    }
+}
+
 int tokenize(char * str)
 {
     BSQTTokenArr token_arr;
@@ -31,7 +42,7 @@ int tokenize(char * str)
     if (checkWord(str, __BSQT_SET_LEN, __BSQT_SET_STR " ")) { /* space coz we need to check the syntax */
         BSQTToken token;
         token.type    = __BSQT_KEYWORD_TYPE;
-        token.val     = __BSQT_SET_STR;
+        token.val     = strdup(__BSQT_SET_STR);
 
         token_arr.arr = malloc((token_arr.len+1) * bsqt_tokenptr_sizeof);
         addToken(&token_arr, &token);
@@ -54,4 +65,6 @@ int tokenize(char * str)
 
     printf("key of 1st token is: %s\n", token_arr.arr[0]->val);
     printf("key of 2nd token is: %s\n", token_arr.arr[1]->val);
+    free_tokenArr(&token_arr);
+    printf("key of 1st token is: %s\n", token_arr.arr[0]->val);
 }

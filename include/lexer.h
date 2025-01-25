@@ -15,6 +15,8 @@
 #define __BSQT_KEYLEN_BYDEF    15 /* bytes to allocate variable's name */
 #define __BSQT_KEYLEN_NEWBYTES 3
 
+
+
 typedef struct {
    void * val;        /* value of token               */
    int    type;       /* type of token (e.g. KEYWORD) */
