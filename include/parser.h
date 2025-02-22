@@ -37,7 +37,7 @@ typedef struct ast_node {
 
 
 ast_node_t * create_num_node (int val);
-ast_node_t * create_bin_node (ast_node_t *left, ast_node_t *right, ast_type_t *type);
+ast_node_t * create_bin_node (ast_node_t *left, ast_node_t *right, ast_type_t type);
 int          evaluate        (ast_node_t *n);
 void         free_ast        (ast_node_t *n);
 void         ast_parse       (token_t *toks);

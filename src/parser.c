@@ -19,10 +19,10 @@ create_num_node (int val)
 }
 
 ast_node_t *
-create_bin_node (ast_node_t * left, ast_node_t * right, ast_type_t * type)
+create_bin_node (ast_node_t * left, ast_node_t * right, ast_type_t  type)
 {
     ast_node_t * n = (ast_node_t *)malloc(sizeof(ast_node_t));
-    n->type=*type;
+    n->type=type;
     n->add.left=left;
     n->add.right=right;
 
@@ -60,6 +60,23 @@ free_ast (ast_node_t * n)
     free(n);
 }
 
+ast_type_t
+lex2parse (token_type_t * t)
+{
+    switch (*t)
+    {
+        case STAR:
+            return AST_STAR;
+        case SLASH:
+            return AST_SLASH;
+        case PLUS:
+            return AST_PLUS;
+        case MINUS:
+            return AST_MINUS;
+    }
+    return 0;
+}
+
 //ast_node_t *
 void
 ast_parse (token_t * toks)
@@ -74,41 +91,10 @@ ast_parse (token_t * toks)
             tmp_left=create_num_node(atoi(toks->value));
         }
 
-        else if (toks->type==PLUS) {
-            if (tmp_left) {
-                tmp_right=create_num_node(atoi(toks->next->value));
-                ast_type_t t = AST_PLUS;
-                root=create_bin_node(tmp_left, tmp_right, &t);
-                tmp_left=root;
-                tmp_right=0;
-            }
-        }
-
-        else if (toks->type==STAR) {
-            if (tmp_left) {
-                tmp_right=create_num_node(atoi(toks->next->value));
-                ast_type_t t = AST_STAR;
-                root=create_bin_node(tmp_left, tmp_right, &t);
-                tmp_left=root;
-                tmp_right=0;
-            }
-        }
-
-        else if (toks->type==MINUS) {
-            if (tmp_left) {
-                tmp_right=create_num_node(atoi(toks->next->value));
-                ast_type_t t = AST_MINUS;
-                root=create_bin_node(tmp_left, tmp_right, &t);
-                tmp_left=root;
-                tmp_right=0;
-            }
-        }
-
-        else if (toks->type==SLASH) {
-            if (tmp_left) {
-                tmp_right=create_num_node(atoi(toks->next->value));
-                ast_type_t t = AST_SLASH;
-                root=create_bin_node(tmp_left, tmp_right, &t);
+        else if (toks->type==PLUS||toks->type==MINUS||toks->type==STAR||toks->type==SLASH) {
+            if (tmp_left&&!tmp_right) {
+                tmp_right=create_num_node(atoi(toks->value));
+                root=create_bin_node(tmp_left, tmp_right, lex2parse(&toks->type));
                 tmp_left=root;
                 tmp_right=0;
             }
