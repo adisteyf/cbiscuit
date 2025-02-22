@@ -19,10 +19,10 @@ create_num_node (int val)
 }
 
 ast_node_t *
-create_add_note (ast_node_t * left, ast_node_t * right)
+create_bin_node (ast_node_t * left, ast_node_t * right, ast_type_t * type)
 {
     ast_node_t * n = (ast_node_t *)malloc(sizeof(ast_node_t));
-    n->type=AST_PLUS;
+    n->type=*type;
     n->add.left=left;
     n->add.right=right;
 
@@ -38,6 +38,12 @@ evaluate (ast_node_t * n)
             return n->val;
         case AST_PLUS:
             return evaluate(n->add.left)+evaluate(n->add.right);
+        case AST_STAR:
+            return evaluate(n->add.left)*evaluate(n->add.right);
+        case AST_MINUS:
+            return evaluate(n->add.left)-evaluate(n->add.right);
+        case AST_SLASH:
+            return evaluate(n->add.left)/evaluate(n->add.right);
         default:
             return 0;
     }
@@ -71,7 +77,38 @@ ast_parse (token_t * toks)
         else if (toks->type==PLUS) {
             if (tmp_left) {
                 tmp_right=create_num_node(atoi(toks->next->value));
-                root=create_add_note(tmp_left, tmp_right);
+                ast_type_t t = AST_PLUS;
+                root=create_bin_node(tmp_left, tmp_right, &t);
+                tmp_left=root;
+                tmp_right=0;
+            }
+        }
+
+        else if (toks->type==STAR) {
+            if (tmp_left) {
+                tmp_right=create_num_node(atoi(toks->next->value));
+                ast_type_t t = AST_STAR;
+                root=create_bin_node(tmp_left, tmp_right, &t);
+                tmp_left=root;
+                tmp_right=0;
+            }
+        }
+
+        else if (toks->type==MINUS) {
+            if (tmp_left) {
+                tmp_right=create_num_node(atoi(toks->next->value));
+                ast_type_t t = AST_MINUS;
+                root=create_bin_node(tmp_left, tmp_right, &t);
+                tmp_left=root;
+                tmp_right=0;
+            }
+        }
+
+        else if (toks->type==SLASH) {
+            if (tmp_left) {
+                tmp_right=create_num_node(atoi(toks->next->value));
+                ast_type_t t = AST_SLASH;
+                root=create_bin_node(tmp_left, tmp_right, &t);
                 tmp_left=root;
                 tmp_right=0;
             }

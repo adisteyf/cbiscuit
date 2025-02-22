@@ -9,6 +9,8 @@ typedef enum ast_type {
     AST_INT,
     AST_PLUS,
     AST_MINUS,
+    AST_STAR,
+    AST_SLASH,
     AST_ID,
     AST_BINARY,
     AST_UNARY
@@ -35,7 +37,7 @@ typedef struct ast_node {
 
 
 ast_node_t * create_num_node (int val);
-ast_node_t * create_add_node (ast_node_t *left, ast_node_t *right);
+ast_node_t * create_bin_node (ast_node_t *left, ast_node_t *right, ast_type_t *type);
 int          evaluate        (ast_node_t *n);
 void         free_ast        (ast_node_t *n);
 void         ast_parse       (token_t *toks);
