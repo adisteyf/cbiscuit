@@ -30,4 +30,7 @@ typedef struct token {
 token_t * bsqt_parse (char * code);
 void      bsqt_push (token_type_t type, char * value);
 
+
+
+
 #endif // LEXER_BSQT_H

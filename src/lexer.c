@@ -2,6 +2,7 @@
 #include <string.h>
 
 
+
 static token_t * list;
 static token_t * head;
 
@@ -88,5 +89,6 @@ bsqt_parse (char * code)
         }
     }
 
+    if (!head) { puts("head == NULL in lexer"); }
     return head;
 }
