@@ -10,13 +10,12 @@ main (void)
 {
     token_t * list = bsqt_parse(CODE);
 
-    /*for (;list!=0;) {
-        printf("token: %s\n", list->value);
-        list = list->next;
-    }*/
-
     if (!list->next) { puts("head ==NULL"); }
-    ast_parse(list);
+    ast_node_t * node = ast_parse(list);
+
+    ast_walk(node);
+    evaluate(node);
+    free_ast(node, 0);
 
     return 0;
 }

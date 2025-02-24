@@ -1,6 +1,5 @@
 #include "parser.h"
 #include "lexer.h"
-#include <ctype.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,7 +16,7 @@ create_num_node (int val)
 }
 
 ast_node_t *
-create_bin_node (ast_node_t * left, ast_node_t * right, ast_type_t  type)
+create_bin_node (ast_node_t * left, ast_node_t * right, ast_type_t type)
 {
     ast_node_t * n = (ast_node_t *)malloc(sizeof(ast_node_t));
     n->type=type;
@@ -30,6 +29,10 @@ create_bin_node (ast_node_t * left, ast_node_t * right, ast_type_t  type)
 int
 evaluate (ast_node_t * n)
 {
+    if (!n) {
+        return 0;
+    }
+
     switch (n->type)
     {
         case AST_INT:
@@ -81,24 +84,7 @@ nums (token_t ** toks) {
         return 0;
     }
 
-    switch ((*toks)->type) {
-        case INTEGER:
-            puts("int");
-            break;
-        case PLUS:
-            puts("+");
-            break;
-        case STAR:
-            puts("*");
-            break;
-    }
-
-    printf("value: %s\n", (*toks)->value);
-
     int val = atoi((*toks)->value);
-    printf("%d\n", val);
-
-    // Переходим к следующему токену
     *toks = (*toks)->next;
     return create_num_node(val);
 }
@@ -106,12 +92,6 @@ nums (token_t ** toks) {
 ast_node_t *
 factor (token_t ** toks) {
     ast_node_t * n = nums(toks);
-
-    if (!n) {
-        puts("n==NULL (*)");
-    } else {
-        puts("n!=NULL (*)");
-    }
 
     while ((*toks) && (*toks)->type == STAR) {
         token_t * op = *toks;
@@ -126,10 +106,6 @@ factor (token_t ** toks) {
 
 ast_node_t *
 expression (token_t ** toks) {
-    if (!*toks) {
-        puts("toks==NULL");
-    }
-
     ast_node_t * n = factor(toks);
     while ((*toks) && (*toks)->type == PLUS) {
         token_t * op = *toks;
@@ -138,18 +114,16 @@ expression (token_t ** toks) {
         n = create_bin_node(n, right, lex2parse(&op->type));
     }
 
-    if (!n) {
-        puts("n==NULL (exp)");
-    } else {
-        puts("n!=NULL (exp)");
-    }
-
     return n;
 }
 
 void
 ast_walk (ast_node_t * n)
 {
+    if (!n) {
+        return;
+    }
+
     if (n->type==AST_INT) {
         printf("%d\n", n->val);
     }
@@ -164,19 +138,14 @@ ast_walk (ast_node_t * n)
 }
 
 
-//ast_node_t *
-void
+ast_node_t *
 ast_parse (token_t * toks) {
     toks = toks->next;
     ast_node_t * n = expression(&toks);
-    ast_walk(n);
-    int res = evaluate(n);
-    printf("%d\n", res);
 
-    if (!n) {
-        puts("n==NULL");
-    } else {
-        puts("n!=NULL");
+    if (n) {
+        return n;
     }
-    free_ast(n, 0);
+
+    return 0;
 }
