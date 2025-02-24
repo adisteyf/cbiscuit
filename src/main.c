@@ -2,7 +2,7 @@
 #include "lexer.h"
 #include "parser.h"
 
-static char * CODE = "3 * 2 + 2 + 7 * 3";
+static char * CODE = "3 * 2 + 6 * 6";
 
 
 int
