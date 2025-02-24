@@ -1,11 +1,12 @@
 #include "parser.h"
 #include "lexer.h"
+#include <ctype.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 
-static token_t * head;
+//static token_t * head;
 
 
 ast_node_t *
@@ -50,11 +51,23 @@ evaluate (ast_node_t * n)
 }
 
 void
-free_ast (ast_node_t * n)
+free_ast (ast_node_t * n, int isRight)
 {
-    if (n->type==AST_PLUS) {
-        free_ast(n->add.left);
-        free_ast(n->add.right);
+    if (n->type==AST_PLUS||n->type==AST_STAR) {
+        printf(" (b)\n");
+        puts("/   \\");
+        free_ast(n->add.left, 0);
+        free_ast(n->add.right, 1);
+    }
+
+    else if (n->type==AST_INT) {
+        if (!isRight) {
+            printf("%d   ", n->val);
+        }
+
+        else {
+            printf("%d\n", n->val);
+        }
     }
 
     free(n);
@@ -77,36 +90,116 @@ lex2parse (token_type_t * t)
     return 0;
 }
 
+ast_node_t *
+nums (token_t * toks) {
+    if (toks==0||toks->value==0) {
+        return 0;
+    }
+
+    switch (toks->type) {
+        case INTEGER:
+            puts("int");
+            break;
+        case PLUS:
+            puts("+");
+            break;
+        case STAR:
+            puts("*");
+            break;
+    }
+
+    printf("value: %s\n", toks->value);
+
+    int val = atoi(toks->value);
+    printf("%d\n", val);
+
+    toks=toks->next;
+    return create_num_node(val);
+}
+
+ast_node_t *
+factor (token_t * toks)
+{
+    ast_node_t * n = nums(toks);
+
+    if (!n) {
+        puts("n==NULL (*)");
+    }
+
+    else {
+        puts("n!=NULL (*)");
+    }
+
+    for (;toks->type==STAR;) {
+        token_t * op = toks;
+        toks=toks->next;
+        ast_node_t * right = factor(toks);
+        n = create_bin_node(n, right, lex2parse(&op->type));
+    }
+
+    return n;
+}
+
+
+ast_node_t *
+expression (token_t * toks)
+{
+    if (!toks) {
+        puts("toks==NULL");
+    }
+
+    ast_node_t * n = factor(toks);
+    for (;toks->type==PLUS;) {
+        token_t * op = toks;
+        toks=toks->next;
+        ast_node_t * right = factor(toks);
+        n = create_bin_node(n, right, lex2parse(&op->type));
+    }
+
+    if (!n) {
+        puts("n==NULL (exp)");
+    }
+
+    else {
+        puts("n!=NULL (exp)");
+    }
+
+    return n;
+}
+
+void
+ast_walk (ast_node_t * n)
+{
+    if (n->type==AST_INT) {
+        printf("%d\n", n->val);
+    }
+
+    else if (n->type==AST_PLUS||n->type==AST_STAR) {
+        printf("(");
+        ast_walk(n->add.left);
+        printf(" + ");
+        ast_walk(n->add.right);
+        printf(")\n");
+    }
+}
+
+
 //ast_node_t *
 void
 ast_parse (token_t * toks)
 {
     toks=toks->next;
-    ast_node_t * tmp_left=0;// = create_num_node(1);
-    ast_node_t * tmp_right=0;// = create_num_node(2);
-    ast_node_t * root=0;// = create_add_note(tmp_left,tmp_right);
+    ast_node_t * n = expression(toks);
+    ast_walk(n);
 
-    for (; toks!=0;toks=toks->next) {
-        if (toks->type==INTEGER) {
-            tmp_left=create_num_node(atoi(toks->value));
-        }
-
-        else if (toks->type==PLUS||toks->type==MINUS||toks->type==STAR||toks->type==SLASH) {
-            if (tmp_left&&!tmp_right) {
-                tmp_right=create_num_node(atoi(toks->value));
-                root=create_bin_node(tmp_left, tmp_right, lex2parse(&toks->type));
-                tmp_left=root;
-                tmp_right=0;
-            }
-        }
+    //int res = evaluate(n);
+    //printf("res: %d\n", res);
+    if (!n) {
+        puts("n==NULL");
     }
 
-    if (root!=0) {
-        int res =  evaluate(root);
-        printf("res: %d\n", res);
-        free_ast(root);
-    }
     else {
-        printf("BSQT: Syntax error.\n");
+        puts("n!=NULL");
     }
+    free_ast(n, 0);
 }

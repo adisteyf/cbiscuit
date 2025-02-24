@@ -2,23 +2,21 @@
 #include "lexer.h"
 #include "parser.h"
 
-static char * CODE = "set abc 1 + 2";
+static char * CODE = "3 * 2 + 2 + 7 * 3";
 
 
 int
 main (void)
 {
-    token_t * list = bsqt_parse("3 * 2 + 2");
+    token_t * list = bsqt_parse(CODE);
 
-    for (;list!=0;) {
+    /*for (;list!=0;) {
         printf("token: %s\n", list->value);
         list = list->next;
-    }
+    }*/
 
-    token_t *l = bsqt_parse("3 * 2 + 2");
-
-    if (!l->next) { puts("head ==NULL"); }
-    ast_parse(l);
+    if (!list->next) { puts("head ==NULL"); }
+    ast_parse(list);
 
     return 0;
 }
