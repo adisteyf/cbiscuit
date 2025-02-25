@@ -12,21 +12,30 @@ typedef enum ast_type {
     AST_STAR,
     AST_SLASH,
     AST_ID,
+    AST_VARIABLE,
     AST_BINARY,
     AST_UNARY
 } ast_type_t;
 
 typedef enum op {
+    OP_SET,
     OP_PLUS,
     OP_MINUS,
     OP_MULT,
     OP_DIV
 } op_t;
 
+typedef struct bsqt_var {
+    char * id;
+    int val;
+    struct bsqt_var * next;
+} bsqt_var_t;
+
 /* Abstract Syntax Tree */
 typedef struct ast_node {
     ast_type_t type;
     union {
+        char * str;
         int val;
         struct {
             struct ast_node * left;
@@ -45,5 +54,6 @@ void         ast_walk        (ast_node_t * n);
 ast_node_t * expression      (token_t ** toks);
 ast_node_t * factor          (token_t ** toks);
 ast_node_t * nums            (token_t ** toks);
+void         free_vars       (void);
 
 #endif // BSQT_PARSER_H

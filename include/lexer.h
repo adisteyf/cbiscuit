@@ -18,7 +18,7 @@ typedef enum token_type {
     SLASH,
     STAR,
     SET,
-    ID
+    ID,
 } token_type_t;
 
 typedef struct token {
