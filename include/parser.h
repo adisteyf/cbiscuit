@@ -34,6 +34,7 @@ typedef struct bsqt_var {
 /* Abstract Syntax Tree */
 typedef struct ast_node {
     ast_type_t type;
+    struct ast_node * next;
     union {
         char * str;
         int val;

@@ -234,7 +234,19 @@ ast_parse (token_t * toks) {
     vars_head = *vars;
 
     toks = toks->next;
-    ast_node_t * n = expression(&toks);
+    ast_node_t * n;
+
+    while (toks) {
+        n = expression(&toks);
+
+        if (!toks) {
+            break;
+        }
+
+        toks=toks->next;
+        n=n->next;
+        n = (ast_node_t *)malloc(sizeof(ast_node_t *));
+    }
 
     return n;
 }
