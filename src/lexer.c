@@ -68,6 +68,10 @@ bsqt_parse (char * code)
             bsqt_push(ID, id);
         }
 
+        if (code[i]=='\n') {
+            bsqt_push(NEWLINE, "\\n");
+        }
+
         /* integer analyzer */
         if (isdigit(c)) {
             char * ptr = &code[i];
@@ -86,6 +90,7 @@ bsqt_parse (char * code)
             value[len]=0;
 
             bsqt_push(INTEGER, value);
+            i--;
         }
     }
 

@@ -111,7 +111,7 @@ lex2parse (token_type_t * t)
 
 ast_node_t *
 nums (token_t ** toks) {
-    if (*toks == 0 || (*toks)->value == 0) {
+    if (*toks == 0 || (*toks)->value == 0 || (*toks)->type == NEWLINE) {
         return 0;
     }
 
@@ -236,9 +236,5 @@ ast_parse (token_t * toks) {
     toks = toks->next;
     ast_node_t * n = expression(&toks);
 
-    if (n) {
-        return n;
-    }
-
-    return 0;
+    return n;
 }

@@ -19,6 +19,7 @@ typedef enum token_type {
     STAR,
     SET,
     ID,
+    NEWLINE
 } token_type_t;
 
 typedef struct token {
