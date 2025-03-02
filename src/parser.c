@@ -89,8 +89,6 @@ free_vars (void)
         current = next;
         vars_len--;
     }
-
-    free(vars);
 }
 
 ast_type_t
