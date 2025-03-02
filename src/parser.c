@@ -6,7 +6,6 @@
 #include <string.h>
 
 static bsqt_var_t * vars;
-static bsqt_var_t * vars_head;
 int vars_len = 0;
 int isVarsHeadSetted = 0;
 
@@ -236,7 +235,6 @@ ast_parse (token_t * toks) {
     vars->id=0;
     vars->val=0;
     vars->next=0;
-    vars_head=vars;
 
     toks = toks->next;
     int is1stCycle = 1;
