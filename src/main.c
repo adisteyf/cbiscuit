@@ -10,9 +10,10 @@ main (int argv, char ** argc)
     size_t CODE_SIZE=0;
 
     if (argv>1) {
-        //CODE = bsqtReadFile(argc[1], &CODE_SIZE);
-        //printf("%s\n", CODE);
-        CODE = "set abc 123\nset test2 333";
+        char * old_code = bsqtReadFile(argc[1], &CODE_SIZE);
+        CODE = strdup(old_code);
+        free(old_code);
+        printf("%s\n", CODE);
     }
 
     else {
