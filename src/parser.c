@@ -6,6 +6,7 @@
 #include <string.h>
 
 static bsqt_var_t * vars;
+static bsqt_var_t * vars4walk;
 int vars_len = 0;
 int isVarsHeadSetted = 0;
 
@@ -173,6 +174,10 @@ expression (token_t ** toks) {
 void
 ast_walk (ast_node_t * n)
 {
+    if (!vars4walk) {
+        vars4walk = vars;
+    }
+
     for (;;) {
         if (!n) {
             return;
@@ -191,12 +196,13 @@ ast_walk (ast_node_t * n)
         }
 
         else if (n->type==AST_VARIABLE) {
-            if (!vars->val) {
+            if (!vars->val || !vars4walk->val) {
                 printf("var == NULL\n");
                 return;
             }
 
-            printf("%s: %d\n", n->str, vars->val);
+            printf("%s: %d\n", n->str, vars4walk->val);
+            vars4walk=vars->next;
         }
 
         n=n->next;

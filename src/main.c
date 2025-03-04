@@ -1,12 +1,25 @@
 #include <stdio.h>
 #include "lexer.h"
 #include "parser.h"
-
-static char * CODE = "set test 333\nset test2 123";
+#include "bsqt_utils.h"
 
 int
-main (void)
+main (int argv, char ** argc)
 {
+    char * CODE=0;
+    size_t CODE_SIZE=0;
+
+    if (argv>1) {
+        //CODE = bsqtReadFile(argc[1], &CODE_SIZE);
+        //printf("%s\n", CODE);
+        CODE = "set abc 123\nset test2 333";
+    }
+
+    else {
+        printf("Biscuit: Too few arguments.\n");
+        return 1;
+    }
+
     token_t * list2 = bsqt_parse(CODE);
     token_t * list = list2;
 
