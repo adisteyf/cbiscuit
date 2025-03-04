@@ -8,12 +8,12 @@ main (int argv, char ** argc)
 {
     char * CODE=0;
     size_t CODE_SIZE=0;
+    biscuit_t * bsqt = (biscuit_t *)malloc(sizeof(biscuit_t));
 
     if (argv>1) {
         char * old_code = bsqtReadFile(argc[1], &CODE_SIZE);
         CODE = strdup(old_code);
         free(old_code);
-        printf("%s\n", CODE);
     }
 
     else {
@@ -31,13 +31,13 @@ main (int argv, char ** argc)
     }
 
     if (!list->next) { puts("head ==NULL"); }
-    ast_node_t * node = ast_parse(list);
+    ast_node_t * node = ast_parse(list, bsqt);
     if (!node) { puts("node == NULL"); }
 
-    ast_walk(node);
+    ast_walk(node, bsqt);
     evaluate(node);
     free_ast(node, 0);
-    free_vars();
+    free_vars(bsqt);
 
     return 0;
 }

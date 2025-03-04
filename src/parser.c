@@ -5,10 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-static bsqt_var_t * vars;
-static bsqt_var_t * vars4walk;
-int vars_len = 0;
-int isVarsHeadSetted = 0;
 
 ast_node_t *
 create_num_node (int val)
@@ -79,15 +75,15 @@ free_ast (ast_node_t * n, int isRight)
 }
 
 void
-free_vars (void)
+free_vars (biscuit_t * bsqt)
 {
-    bsqt_var_t * current = vars;
-    while (vars_len) {
+    bsqt_var_t * current = bsqt->vars;
+    while (bsqt->vars_len) {
         bsqt_var_t * next = current->next;
         free(current->id);
         free(current);
         current = next;
-        vars_len--;
+        bsqt->vars_len--;
     }
 }
 
@@ -109,7 +105,7 @@ lex2parse (token_type_t * t)
 }
 
 ast_node_t *
-nums (token_t ** toks) {
+nums (token_t ** toks, biscuit_t * bsqt) {
     if (*toks == 0 || (*toks)->value == 0 || (*toks)->type == NEWLINE) {
         return 0;
     }
@@ -119,16 +115,16 @@ nums (token_t ** toks) {
         bsqt_var_t *var = (bsqt_var_t *)malloc(sizeof(bsqt_var_t));
         var->id = strdup((*toks)->value);
         var->val = 0;
-        var->next = vars;
-        vars = var;
-        vars_len++;
+        var->next = bsqt->vars;
+        bsqt->vars = var;
+        bsqt->vars_len++;
         ast_node_t * n = create_var_node((*toks)->value);
         *toks = (*toks)->next;
 
 
         if ((*toks)->type == INTEGER) {
             puts("in if INT");
-            vars->val = atoi((*toks)->value);
+            bsqt->vars->val = atoi((*toks)->value);
             *toks = (*toks)->next;
         }
 
@@ -145,13 +141,13 @@ nums (token_t ** toks) {
 }
 
 ast_node_t *
-factor (token_t ** toks) {
-    ast_node_t * n = nums(toks);
+factor (token_t ** toks, biscuit_t * bsqt) {
+    ast_node_t * n = nums(toks, bsqt);
 
     while ((*toks) && (*toks)->type == STAR) {
         token_t * op = *toks;
         *toks = (*toks)->next;
-        ast_node_t * right = factor(toks);
+        ast_node_t * right = factor(toks, bsqt);
         n = create_bin_node(n, right, lex2parse(&op->type));
     }
 
@@ -159,12 +155,12 @@ factor (token_t ** toks) {
 }
 
 ast_node_t *
-expression (token_t ** toks) {
-    ast_node_t * n = factor(toks);
+expression (token_t ** toks, biscuit_t * bsqt) {
+    ast_node_t * n = factor(toks, bsqt);
     while ((*toks) && (*toks)->type == PLUS) {
         token_t * op = *toks;
         *toks = (*toks)->next;
-        ast_node_t * right = factor(toks);
+        ast_node_t * right = factor(toks, bsqt);
         n = create_bin_node(n, right, lex2parse(&op->type));
     }
 
@@ -172,10 +168,10 @@ expression (token_t ** toks) {
 }
 
 void
-ast_walk (ast_node_t * n)
+ast_walk (ast_node_t * n, biscuit_t * bsqt)
 {
-    if (!vars4walk) {
-        vars4walk = vars;
+    if (!bsqt->vars4walk) {
+        bsqt->vars4walk = bsqt->vars;
     }
 
     for (;;) {
@@ -189,20 +185,20 @@ ast_walk (ast_node_t * n)
 
         else if (n->type==AST_PLUS||n->type==AST_STAR) {
             printf("(");
-            ast_walk(n->add.left);
+            ast_walk(n->add.left, bsqt);
             printf(" bin ");
-            ast_walk(n->add.right);
+            ast_walk(n->add.right, bsqt);
             printf(")\n");
         }
 
         else if (n->type==AST_VARIABLE) {
-            if (!vars->val || !vars4walk->val) {
+            if (!bsqt->vars->val || !bsqt->vars4walk->val) {
                 printf("var == NULL\n");
                 return;
             }
 
-            printf("%s: %d\n", n->str, vars4walk->val);
-            vars4walk=vars->next;
+            printf("%s: %d\n", n->str, bsqt->vars4walk->val);
+            bsqt->vars4walk=bsqt->vars->next;
         }
 
         n=n->next;
@@ -210,9 +206,9 @@ ast_walk (ast_node_t * n)
 }
 
 void
-set_var_value (const char * name, int value) /* experemental */
+set_var_value (const char * name, int value, biscuit_t * bsqt) /* experemental */
 {
-    bsqt_var_t *current = vars;
+    bsqt_var_t *current = bsqt->vars;
     while (current) {
         if (strcmp(current->id, name) == 0) {
             current->val = value;
@@ -224,8 +220,8 @@ set_var_value (const char * name, int value) /* experemental */
     bsqt_var_t *new_var = (bsqt_var_t *)malloc(sizeof(bsqt_var_t));
     new_var->id = strdup(name);
     new_var->val = value;
-    new_var->next = vars;
-    vars = new_var;
+    new_var->next = bsqt->vars;
+    bsqt->vars = new_var;
 }
 
 void
@@ -235,12 +231,14 @@ endofparse ()
 }
 
 ast_node_t *
-ast_parse (token_t * toks) {
+ast_parse (token_t * toks, biscuit_t * bsqt) {
 //    set_var_value("abc", 123);
-    vars = (bsqt_var_t *)malloc(sizeof(bsqt_var_t));
-    vars->id=0;
-    vars->val=0;
-    vars->next=0;
+    bsqt->vars_len=0;
+    bsqt->vars4walk=0;
+    bsqt->vars = (bsqt_var_t *)malloc(sizeof(bsqt_var_t));
+    bsqt->vars->id=0;
+    bsqt->vars->val=0;
+    bsqt->vars->next=0;
 
     toks = toks->next;
     int is1stCycle = 1;
@@ -248,7 +246,7 @@ ast_parse (token_t * toks) {
     ast_node_t *ast_head = NULL;
 
     while (toks) {
-        ast_node_t *new_node = expression(&toks);
+        ast_node_t *new_node = expression(&toks, bsqt);
 
         if (is1stCycle) {
             ast_head = new_node;
