@@ -33,4 +33,5 @@ if (DEFINED BSQT_TESTS)
     list(APPEND SRCS_WITHOUT_MAIN tests/bsqt_tester.c)
 
     add_executable(bsqt_tests_bin ${SRCS_WITHOUT_MAIN})
+    file(COPY "${CMAKE_SOURCE_DIR}/tests/bsqt_tests.py" DESTINATION "${CMAKE_BINARY_DIR}")
 endif()
