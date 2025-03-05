@@ -1,0 +1,7 @@
+# test #1
+# 
+# Test of comments
+
+set test0 123
+set test1 321 # test comment
+set test2 333

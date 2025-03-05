@@ -259,6 +259,13 @@ ast_parse (biscuit_t * bsqt) {
     ast_node_t *n = NULL;
     ast_node_t *ast_head = NULL;
 
+    /* multi-newlines at start check */
+    if (bsqt->toklist->type == NEWLINE) {
+        for (;bsqt->toklist && bsqt->toklist->next && bsqt->toklist->type == NEWLINE;) {
+            bsqt->toklist = bsqt->toklist->next;
+        }
+    }
+
     while (bsqt->toklist) {
         ast_node_t *new_node = expression(&bsqt->toklist, bsqt);
 

@@ -1,0 +1,7 @@
+# test #2
+# 
+# test of multi-spaces between tokens
+
+set a   1
+set ab  2
+set abc 3

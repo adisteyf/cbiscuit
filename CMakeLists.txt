@@ -19,3 +19,18 @@ add_executable(main ${SRCS})
 
 # include
 include_directories(${CMAKE_SOURCE_DIR}/include)
+
+
+
+# tests
+if (DEFINED BSQT_TESTS)
+    set(SRCS_WITHOUT_MAIN "")
+    foreach(file ${SRCS})
+        if(NOT "${file}" MATCHES "src/main\\.c")
+            list(APPEND SRCS_WITHOUT_MAIN ${file})
+        endif()
+    endforeach()
+    list(APPEND SRCS_WITHOUT_MAIN tests/bsqt_tester.c)
+
+    add_executable(bsqt_tests_bin ${SRCS_WITHOUT_MAIN})
+endif()
