@@ -46,6 +46,9 @@ typedef struct ast_node {
 } ast_node_t;
 
 typedef struct biscuit {
+    token_t    * toklist;
+    ast_node_t * node;
+
     bsqt_var_t * vars;
     bsqt_var_t * vars4walk;
     int vars_len;

@@ -21,8 +21,8 @@ main (int argv, char ** argc)
         return 1;
     }
 
-    token_t * list2 = bsqt_parse(CODE);
-    token_t * list = list2;
+    bsqt->toklist = bsqt_parse(CODE);
+    token_t * list2 = bsqt->toklist;
 
     list2=list2->next;
     puts("list2:");
@@ -30,8 +30,8 @@ main (int argv, char ** argc)
         printf("token: %s\n", list2->value);
     }
 
-    if (!list->next) { puts("head ==NULL"); }
-    ast_node_t * node = ast_parse(list, bsqt);
+    if (!bsqt->toklist->next) { puts("head ==NULL"); }
+    ast_node_t * node = ast_parse(bsqt->toklist, bsqt);
     if (!node) { puts("node == NULL"); }
 
     ast_walk(node, bsqt);
