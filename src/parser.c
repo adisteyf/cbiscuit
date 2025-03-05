@@ -231,8 +231,14 @@ endofparse ()
 }
 
 ast_node_t *
-ast_parse (token_t * toks, biscuit_t * bsqt) {
+ast_parse (biscuit_t * bsqt) {
 //    set_var_value("abc", 123);
+
+    if (!bsqt->toklist->next) {
+        printf("Biscuit: bsqt->toklist == NULL\n");
+        return 0;
+    }
+
     bsqt->vars_len=0;
     bsqt->vars4walk=0;
     bsqt->vars = (bsqt_var_t *)malloc(sizeof(bsqt_var_t));
@@ -240,13 +246,13 @@ ast_parse (token_t * toks, biscuit_t * bsqt) {
     bsqt->vars->val=0;
     bsqt->vars->next=0;
 
-    toks = toks->next;
+    bsqt->toklist = bsqt->toklist->next;
     int is1stCycle = 1;
     ast_node_t *n = NULL;
     ast_node_t *ast_head = NULL;
 
-    while (toks) {
-        ast_node_t *new_node = expression(&toks, bsqt);
+    while (bsqt->toklist) {
+        ast_node_t *new_node = expression(&bsqt->toklist, bsqt);
 
         if (is1stCycle) {
             ast_head = new_node;
@@ -257,11 +263,11 @@ ast_parse (token_t * toks, biscuit_t * bsqt) {
             n = n->next;
         }
 
-        if (!toks) {
+        if (!bsqt->toklist) {
             break;
         }
 
-        toks = toks->next;
+        bsqt->toklist = bsqt->toklist->next;
     }
 
     endofparse();

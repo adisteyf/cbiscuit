@@ -30,8 +30,7 @@ main (int argv, char ** argc)
         printf("token: %s\n", list2->value);
     }
 
-    if (!bsqt->toklist->next) { puts("head ==NULL"); }
-    ast_node_t * node = ast_parse(bsqt->toklist, bsqt);
+    ast_node_t * node = ast_parse(bsqt);
     if (!node) { puts("node == NULL"); }
 
     ast_walk(node, bsqt);

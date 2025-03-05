@@ -32,6 +32,10 @@ bsqt_getEq (char * str, char * cmp, size_t pos)
 token_t *
 bsqt_parse (char * code)
 {
+    if (!code) {
+        return 0;
+    }
+
     list = (token_t *)malloc(sizeof(token_t));
     head = list;
     bzero(list, sizeof(token_t));
