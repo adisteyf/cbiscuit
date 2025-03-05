@@ -131,7 +131,6 @@ nums (token_t ** toks, biscuit_t * bsqt) {
 
 
         if ((*toks)->type == INTEGER) {
-            puts("in if INT");
             bsqt->vars->val = atoi((*toks)->value);
             *toks = (*toks)->next;
         }
@@ -232,12 +231,6 @@ set_var_value (const char * name, int value, biscuit_t * bsqt) /* experemental *
     bsqt->vars = new_var;
 }
 
-void
-endofparse ()
-{
-    puts("end of parse");
-}
-
 ast_node_t *
 ast_parse (biscuit_t * bsqt) {
 //    set_var_value("abc", 123);
@@ -274,7 +267,6 @@ ast_parse (biscuit_t * bsqt) {
             n = ast_head;
             is1stCycle = 0;
         } else {
-            endofparse();
             n->next = new_node;
             n = n->next;
         }
