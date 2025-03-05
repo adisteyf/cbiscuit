@@ -22,6 +22,7 @@ main (int argv, char ** argc)
     }
 
     bsqt->toklist = bsqt_parse(CODE);
+    free(CODE);
     token_t * list2 = bsqt->toklist;
 
     list2=list2->next;
