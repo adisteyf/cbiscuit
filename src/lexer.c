@@ -6,7 +6,7 @@
 
 static token_t * list;
 static token_t * head;
-
+static int       isComment = 0;
 
 void
 bsqt_push (token_type_t type, char * value)
@@ -46,10 +46,16 @@ bsqt_parse (char * code)
         /* one-symbol analyzer */
         switch (c)
         {
-            case '+': bsqt_push(PLUS, "+"); break;
-            case '-': bsqt_push(MINUS, "-"); break;
-            case '/': bsqt_push(SLASH, "/"); break;
-            case '*': bsqt_push(STAR, "*"); break;
+            case  '+': bsqt_push(PLUS,  "+"); break;
+            case  '-': bsqt_push(MINUS, "-"); break;
+            case  '/': bsqt_push(SLASH, "/"); break;
+            case  '*': bsqt_push(STAR,  "*"); break;
+            case  '#': isComment=1;           break;
+            case '\n': isComment=0;           break;
+        }
+
+        if (isComment) {
+            continue;
         }
 
         /* several-symbol analyzer */
