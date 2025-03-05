@@ -65,5 +65,6 @@ ast_node_t * expression      (token_t ** toks, biscuit_t * bsqt);
 ast_node_t * factor          (token_t ** toks, biscuit_t * bsqt);
 ast_node_t * nums            (token_t ** toks, biscuit_t * bsqt);
 void         free_vars       (biscuit_t * bsqt);
+bsqt_var_t * bsqtGetVar      (const char * name, biscuit_t * bsqt);
 
 #endif // BSQT_PARSER_H

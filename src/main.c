@@ -36,6 +36,10 @@ main (int argv, char ** argc)
 
     ast_walk(node, bsqt);
     evaluate(node);
+
+    bsqt_var_t * var = bsqtGetVar("test2", bsqt);
+    printf("%d\n", var->val);
+
     free_ast(node, 0);
     free_vars(bsqt);
 

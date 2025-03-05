@@ -273,3 +273,21 @@ ast_parse (biscuit_t * bsqt) {
     endofparse();
     return ast_head;
 }
+
+bsqt_var_t *
+bsqtGetVar (const char * name, biscuit_t * bsqt)
+{
+    bsqt->vars4walk = bsqt->vars;
+
+    for (;;) {
+        if (0==strcmp(bsqt->vars4walk->id, name)) {
+            return bsqt->vars4walk;
+        }
+
+        if (!bsqt->vars4walk->next) {
+            return 0;
+        }
+
+        bsqt->vars4walk = bsqt->vars4walk->next;
+    }
+}
