@@ -106,7 +106,15 @@ lex2parse (token_type_t * t)
 
 ast_node_t *
 nums (token_t ** toks, biscuit_t * bsqt) {
-    if (*toks == 0 || (*toks)->value == 0 || (*toks)->type == NEWLINE) {
+    if ((*toks)->type == NEWLINE) {
+        for (;(*toks)->next && (*toks)->next->type == NEWLINE;) {
+            *toks = (*toks)->next;
+        }
+
+        return 0;
+    }
+
+    if (*toks == 0 || (*toks)->value == 0) {
         return 0;
     }
 
@@ -259,6 +267,7 @@ ast_parse (biscuit_t * bsqt) {
             n = ast_head;
             is1stCycle = 0;
         } else {
+            endofparse();
             n->next = new_node;
             n = n->next;
         }
@@ -270,7 +279,6 @@ ast_parse (biscuit_t * bsqt) {
         bsqt->toklist = bsqt->toklist->next;
     }
 
-    endofparse();
     return ast_head;
 }
 
