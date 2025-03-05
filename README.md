@@ -44,22 +44,22 @@ static char * CODE = "set abc 123\nset test2 111";
 int
 main (int argv, char ** argc)
 {
-	/* alloc. mem. 4 bsqt */
+    /* alloc. mem. 4 bsqt */
     biscuit_t * bsqt = (biscuit_t *)malloc(sizeof(biscuit_t));
 
-	/* tokenize & parse */
+    /* tokenize & parse */
     bsqt->toklist = bsqt_parse(CODE); 
     ast_node_t * node = ast_parse(bsqt); 
 
-	/* print the AST tree (optional) & solve math e.g. 321-123 */
+    /* print the AST tree (optional) & solve math e.g. 321-123 */
     ast_walk(node, bsqt); 
     evaluate(node);
 
-	/* get a variable */
+    /* get a variable */
     bsqt_var_t * var = bsqtGetVar("abc", bsqt);
     printf("%d\n", var->val);
 
-	/* free memory */
+    /* free memory */
     free_ast(node, 0);
     free_vars(bsqt);
 
