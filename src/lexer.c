@@ -1,5 +1,6 @@
 #include "lexer.h"
 #include "parser.h"
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -44,6 +45,13 @@ bsqt_parse (char * code)
     for (size_t i=0; i<strlen(code); ++i) {
         char c = code[i];
 
+        if      (c=='#')  { isComment=1; }
+        else if (c=='\n') { isComment=0; }
+
+        if (isComment) {
+            continue;
+        }
+
         /* one-symbol analyzer */
         switch (c)
         {
@@ -51,12 +59,6 @@ bsqt_parse (char * code)
             case  '-': bsqt_push(MINUS, "-"); break;
             case  '/': bsqt_push(SLASH, "/"); break;
             case  '*': bsqt_push(STAR,  "*"); break;
-            case  '#': isComment=1;           break;
-            case '\n': isComment=0;           break;
-        }
-
-        if (isComment) {
-            continue;
         }
 
         /* several-symbol analyzer */
