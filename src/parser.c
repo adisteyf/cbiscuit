@@ -204,7 +204,9 @@ ast_walk (ast_node_t * n, biscuit_t * bsqt)
                 return;
             }
 
-            printf("%s: %d\n", n->str, bsqt->vars4walk->val);
+            bsqt_var_t * tmp_var = bsqtGetVar(n->str, bsqt);
+
+            printf("%s: %d\n", tmp_var->id, tmp_var->val);
             bsqt->vars4walk=bsqt->vars->next;
         }
 
