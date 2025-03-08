@@ -231,6 +231,12 @@ set_var_value (const char * name, int value, biscuit_t * bsqt) /* experemental *
     bsqt->vars = new_var;
 }
 
+void
+testfn ()
+{
+    printf("testfn\n");
+}
+
 ast_node_t *
 ast_parse (biscuit_t * bsqt) {
 //    set_var_value("abc", 123);
@@ -251,13 +257,6 @@ ast_parse (biscuit_t * bsqt) {
     int is1stCycle = 1;
     ast_node_t *n = NULL;
     ast_node_t *ast_head = NULL;
-
-    /* multi-newlines at start check */
-    if (bsqt->toklist->type == NEWLINE) {
-        for (;bsqt->toklist && bsqt->toklist->next && bsqt->toklist->type == NEWLINE;) {
-            bsqt->toklist = bsqt->toklist->next;
-        }
-    }
 
     while (bsqt->toklist) {
         ast_node_t *new_node = expression(&bsqt->toklist, bsqt);
