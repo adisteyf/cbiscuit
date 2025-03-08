@@ -81,7 +81,13 @@ bsqt_parse (char * code)
         }
 
         if (code[i]=='\n') {
-            bsqt_push(NEWLINE, "\\n");
+            if (code[i+1]!='\n') {
+                bsqt_push(NEWLINE, "\\n");
+            }
+
+            else {
+                continue;
+            }
         }
 
         /* integer analyzer */
@@ -116,24 +122,6 @@ bsqt_parse (char * code)
 
         head=head->next;
     }
-
-    /* remove ALL NEWLINEs from code */
-    /*token_t * head2rm = head;
-    token_t * new_head = (token_t *)malloc(sizeof(token_t));
-    new_head->next=0;
-    new_head->type=0;
-    new_head->value=0;
-
-    for (;;) {
-        if (head2rm->next->type==NEWLINE) {
-            continue;
-        }
-
-        new_head->next = (token_t *)malloc(sizeof(token_t));
-        head2rm=head2rm->next;
-        new_head=new_head->next;
-        new_head->value=
-    }*/
 
     return head;
 }
